@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers\Units;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Model\Unit;
+use Auth;
+
+class UnitsController extends Controller
+{
+    public function view(){
+        $allData= Unit::all();
+        return view('units/view-unit',compact('allData'));
+    }
+
+    public function add(){
+        return view('units/add-unit');
+    }
+
+    public function store(Request $request){
+        $unit = new Unit();
+        $unit->name= $request->name;
+        $unit->created_by= Auth::user()->id;
+        $unit->save();
+        return redirect()->route('units.view')->with('success','Unit added successfully');
+    }
+
+
+    public function edit($id){
+         $editData = Unit::find($id);
+         return view('units/edit-unit',compact('editData'));
+     }
+ 
+     public function update(Request $request, $id){
+        $unit = Unit::find($id);
+        $unit->name= $request->name;
+        $unit->updated_by= Auth::user()->id;
+        $unit->save();
+        return redirect()->route('units.view')->with('success','Unit Updated Successfully');
+       
+     }
+ 
+     public function delete($id){
+         $unit = Unit::find($id);
+ 
+         $unit->delete();
+         return redirect()->route('units.view')->with('success','Unit deleted Successfully');
+          
+      }
+}
